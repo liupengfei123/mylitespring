@@ -1,33 +1,53 @@
 package org.mylitespring.beans.factory;
 
 import com.test.mylitespring.service.v1.PetStoreService;
+import org.junit.Before;
 import org.junit.Test;
 import org.mylitespring.beans.BeanDefinition;
 import org.mylitespring.beans.factory.support.DefaultBeanFactory;
+import org.mylitespring.beans.factory.xml.XMLBeanDefinitionReader;
+import org.mylitespring.core.io.support.ClassPathResource;
 
 import static org.junit.Assert.*;
 
 public class BeanFactoryTest {
 
+    private DefaultBeanFactory beanFactory;
+    private XMLBeanDefinitionReader reader;
+
+    @Before
+    public void setup() {
+        beanFactory = new DefaultBeanFactory();
+        reader = new XMLBeanDefinitionReader(beanFactory);
+    }
 
     @Test
     public void testGetBean() {
-        BeanFactory beanFactory = new DefaultBeanFactory("petstore-v1.xml");
 
-        BeanDefinition definition = beanFactory.getBeanDefinition("petStore");
+        reader.loadBeanDefinition(new ClassPathResource("petstore-v1.xml"));
+        BeanDefinition bd = beanFactory.getBeanDefinition("petStore");
 
-        assertEquals("com.test.mylitespring.service.v1.PetStoreService", definition.getBeanClassName());
+        assertTrue(bd.isSingleton());
 
-        PetStoreService bean = (PetStoreService) beanFactory.getBean("petStore");
+        assertFalse(bd.isPrototype());
 
-        assertNotNull(bean);
+        assertEquals(BeanDefinition.SCOPE_DEFAULT, bd.getScope());
+
+        assertEquals("com.test.mylitespring.service.v1.PetStoreService", bd.getBeanClassName());
+
+        PetStoreService petStore = (PetStoreService) beanFactory.getBean("petStore");
+
+        assertNotNull(petStore);
+
+        PetStoreService petStore1 = (PetStoreService) beanFactory.getBean("petStore");
+
+        assertEquals(petStore, petStore1);
     }
 
 
     @Test
     public void testInvalidBean() {
-        BeanFactory beanFactory = new DefaultBeanFactory("petstore-v1.xml");
-
+        reader.loadBeanDefinition(new ClassPathResource("petstore-v1.xml"));
         try {
             beanFactory.getBean("InvalidBean");
         } catch (BeanCreationException e) {
@@ -39,7 +59,7 @@ public class BeanFactoryTest {
     @Test
     public void testInvalidXml() {
         try {
-             new DefaultBeanFactory("InvalidXml.xml");
+            reader.loadBeanDefinition(new ClassPathResource("InvalidXml.xml"));
         } catch (BeanDefinitionStoreException e) {
             return;
         }
