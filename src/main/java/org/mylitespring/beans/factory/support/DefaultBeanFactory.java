@@ -3,6 +3,7 @@ package org.mylitespring.beans.factory.support;
 import org.mylitespring.beans.BeanDefinition;
 import org.mylitespring.beans.BeanDefinitionRegistry;
 import org.mylitespring.beans.PropertyValue;
+import org.mylitespring.beans.SimpleTypeConverter;
 import org.mylitespring.beans.factory.BeanCreationException;
 import org.mylitespring.beans.factory.config.ConfigurableBeanFactory;
 import org.mylitespring.util.ClassUtils;
@@ -92,6 +93,7 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         }
 
         BeanDefinitionValueResolver resolver = new BeanDefinitionValueResolver(this);
+        SimpleTypeConverter converter = new SimpleTypeConverter();
 
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
@@ -105,6 +107,7 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
 
                 for (PropertyDescriptor pd : pds) {
                     if (pd.getName().equals(propertyName)) {
+                        resolvedValue = converter.convertIfNecessary(resolvedValue, pd.getPropertyType());
                         pd.getWriteMethod().invoke(bean, resolvedValue);
                         break;
                     }

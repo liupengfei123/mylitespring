@@ -1,4 +1,4 @@
-package org.mylitespring.v1;
+package org.mylitespring.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
