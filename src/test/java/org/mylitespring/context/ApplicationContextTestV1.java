@@ -8,7 +8,7 @@ import org.mylitespring.context.support.FileSystemXmlApplicationContext;
 
 import java.io.File;
 
-public class ApplicationContextTest {
+public class ApplicationContextTestV1 {
 
 
     @Test

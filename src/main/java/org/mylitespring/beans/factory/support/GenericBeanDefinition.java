@@ -1,6 +1,10 @@
 package org.mylitespring.beans.factory.support;
 
 import org.mylitespring.beans.BeanDefinition;
+import org.mylitespring.beans.PropertyValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GenericBeanDefinition implements BeanDefinition {
 
@@ -10,6 +14,8 @@ public class GenericBeanDefinition implements BeanDefinition {
     private String scope = SCOPE_DEFAULT;
     private boolean singleton = true;
     private boolean prototype = false;
+
+    private List<PropertyValue> propertyValues = new ArrayList<>();
 
     public GenericBeanDefinition(String id, String beanClassName) {
         this.id = id;
@@ -41,5 +47,10 @@ public class GenericBeanDefinition implements BeanDefinition {
     @Override
     public String getBeanClassName() {
         return beanClassName;
+    }
+
+    @Override
+    public List<PropertyValue> getPropertyValues() {
+        return propertyValues;
     }
 }
