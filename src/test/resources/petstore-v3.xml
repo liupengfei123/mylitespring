@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="petStore1" class="com.test.mylitespring.service.PetStoreServiceV3">
+        <constructor-arg  ref="accountDao"/>
+        <constructor-arg  ref="itemDao"/>
+        <constructor-arg  value="liuxin"/>
+        <constructor-arg  value="2"/>
+    </bean>
+
+    <bean id="petStore2" class="com.test.mylitespring.service.PetStoreServiceV3">
+        <constructor-arg  ref="accountDao"/>
+        <constructor-arg  ref="itemDao"/>
+        <constructor-arg  value="liuxin2"/>
+    </bean>
+
+    <bean id="accountDao" class="com.test.mylitespring.dao.v2.AccountDao"></bean>
+
+    <bean id="itemDao" class="com.test.mylitespring.dao.v2.ItemDao"></bean>
+</beans>

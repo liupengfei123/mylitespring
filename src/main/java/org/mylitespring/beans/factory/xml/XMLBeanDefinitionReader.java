@@ -7,6 +7,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.mylitespring.beans.BeanDefinition;
 import org.mylitespring.beans.BeanDefinitionRegistry;
+import org.mylitespring.beans.ConstructorArgument;
 import org.mylitespring.beans.PropertyValue;
 import org.mylitespring.beans.factory.BeanDefinitionStoreException;
 import org.mylitespring.beans.factory.config.RuntimeBeanReference;
@@ -26,11 +27,13 @@ public class XMLBeanDefinitionReader {
     private final static String REF_ATTRIBUTE = "ref";
     private final static String VALUE_ATTRIBUTE = "value";
     private final static String NAME_ATTRIBUTE = "name";
+    private final static String CONSTRUCTOR_ELEMENT = "constructor-arg";
+    public static final String TYPE_ATTRIBUTE = "type";
 
 
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private BeanDefinitionRegistry registry;
+    private final BeanDefinitionRegistry registry;
 
     public XMLBeanDefinitionReader(BeanDefinitionRegistry beanDefinitionRegistry) {
         this.registry = beanDefinitionRegistry;
@@ -58,6 +61,7 @@ public class XMLBeanDefinitionReader {
                 }
 
                 parsePropertyElement(element, beanDefinition);
+                parseConstructorElement(element, beanDefinition);
 
                 registry.registerBeanDefinition(id, beanDefinition);
             }
@@ -83,6 +87,31 @@ public class XMLBeanDefinitionReader {
             bd.getPropertyValues().add(new PropertyValue(propertyName, value));
         }
     }
+
+    private void parseConstructorElement(Element beanElem, BeanDefinition bd) {
+        Iterator iterator = beanElem.elementIterator(CONSTRUCTOR_ELEMENT);
+
+        ConstructorArgument constructorArgument = bd.getConstructorArgument();
+        while (iterator.hasNext()) {
+            Element element = (Element) iterator.next();
+
+            Object value = parsePropertyValue(element, null);
+            ConstructorArgument.ValueHolder valueHolder = new ConstructorArgument.ValueHolder(value);
+
+            String typeAttr = element.attributeValue(TYPE_ATTRIBUTE);
+            if (StringUtils.hasLength(typeAttr)) {
+                valueHolder.setValue(typeAttr);
+            }
+
+            String nameAttr = element.attributeValue(NAME_ATTRIBUTE);
+            if (StringUtils.hasLength(nameAttr)) {
+                valueHolder.setName(nameAttr);
+            }
+
+            constructorArgument.addArgumentValue(valueHolder);
+        }
+    }
+
 
     private Object parsePropertyValue(Element ele, String propertyName) {
         String elementName = (propertyName != null) ?

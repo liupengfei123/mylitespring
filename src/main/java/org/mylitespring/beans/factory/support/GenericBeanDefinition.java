@@ -1,6 +1,7 @@
 package org.mylitespring.beans.factory.support;
 
 import org.mylitespring.beans.BeanDefinition;
+import org.mylitespring.beans.ConstructorArgument;
 import org.mylitespring.beans.PropertyValue;
 
 import java.util.ArrayList;
@@ -8,18 +9,24 @@ import java.util.List;
 
 public class GenericBeanDefinition implements BeanDefinition {
 
-    private String id;
-    private String beanClassName;
+    private final String id;
+    private final String beanClassName;
 
     private String scope = SCOPE_DEFAULT;
     private boolean singleton = true;
     private boolean prototype = false;
 
-    private List<PropertyValue> propertyValues = new ArrayList<>();
+    private final List<PropertyValue> propertyValues = new ArrayList<>();
+
+    private final ConstructorArgument constructorArgument = new ConstructorArgument();
 
     public GenericBeanDefinition(String id, String beanClassName) {
         this.id = id;
         this.beanClassName = beanClassName;
+    }
+
+    public String getID() {
+        return id;
     }
 
     @Override
@@ -52,5 +59,15 @@ public class GenericBeanDefinition implements BeanDefinition {
     @Override
     public List<PropertyValue> getPropertyValues() {
         return propertyValues;
+    }
+
+    @Override
+    public boolean hasConstructorArgument() {
+        return !constructorArgument.isEmpty();
+    }
+
+    @Override
+    public ConstructorArgument getConstructorArgument() {
+        return constructorArgument;
     }
 }

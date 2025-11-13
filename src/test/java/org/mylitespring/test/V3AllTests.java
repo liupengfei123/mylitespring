@@ -2,13 +2,12 @@ package org.mylitespring.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.mylitespring.beans.factory.support.ConstructorResolverTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        V1AllTests.class,
-        V2AllTests.class,
-        V3AllTests.class,
+        ConstructorResolverTest.class,
 })
-public class AllTests {
+public class V3AllTests {
 
 }
