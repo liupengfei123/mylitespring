@@ -10,7 +10,7 @@ import org.mylitespring.beans.factory.config.TypedStringValue;
 import org.mylitespring.beans.factory.xml.XMLBeanDefinitionReader;
 import org.mylitespring.core.io.support.ClassPathResource;
 
-public class BeanDefinitionValueResolverTestV2 {
+public class BeanDefinitionValueResolverTest {
 
     private BeanFactory factory;
 

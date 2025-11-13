@@ -9,7 +9,7 @@ import org.mylitespring.core.io.support.ClassPathResource;
 
 import java.util.List;
 
-public class BeanDefinitionTestV2 {
+public class BeanDefinitionTest {
 
 
     @Test

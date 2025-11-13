@@ -1,9 +1,9 @@
-package com.test.mylitespring.service.v2;
+package com.test.mylitespring.service;
 
 import com.test.mylitespring.dao.v2.AccountDao;
 import com.test.mylitespring.dao.v2.ItemDao;
 
-public class PetStoreService {
+public class PetStoreServiceV2 {
     private AccountDao accountDao;
     private ItemDao itemDao;
     private String owner;

@@ -1,6 +1,6 @@
 package org.mylitespring.beans.factory;
 
-import com.test.mylitespring.service.v1.PetStoreService;
+import com.test.mylitespring.service.PetStoreServiceV1;
 import org.junit.Before;
 import org.junit.Test;
 import org.mylitespring.beans.BeanDefinition;
@@ -16,7 +16,7 @@ public class BeanFactoryTest {
     private XMLBeanDefinitionReader reader;
 
     @Before
-    public void setup() {
+    public void setUp() {
         beanFactory = new DefaultBeanFactory();
         reader = new XMLBeanDefinitionReader(beanFactory);
     }
@@ -33,13 +33,13 @@ public class BeanFactoryTest {
 
         assertEquals(BeanDefinition.SCOPE_DEFAULT, bd.getScope());
 
-        assertEquals("com.test.mylitespring.service.v1.PetStoreService", bd.getBeanClassName());
+        assertEquals("com.test.mylitespring.service.PetStoreServiceV1", bd.getBeanClassName());
 
-        PetStoreService petStore = (PetStoreService) beanFactory.getBean("petStore");
+        PetStoreServiceV1 petStore = (PetStoreServiceV1) beanFactory.getBean("petStore");
 
         assertNotNull(petStore);
 
-        PetStoreService petStore1 = (PetStoreService) beanFactory.getBean("petStore");
+        PetStoreServiceV1 petStore1 = (PetStoreServiceV1) beanFactory.getBean("petStore");
 
         assertEquals(petStore, petStore1);
     }

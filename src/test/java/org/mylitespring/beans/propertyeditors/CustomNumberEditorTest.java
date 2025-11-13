@@ -3,7 +3,7 @@ package org.mylitespring.beans.propertyeditors;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class CustomNumberEditorTestV2 {
+public class CustomNumberEditorTest {
 
     @Test
     public void testConvertString() {

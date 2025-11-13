@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class CustomBooleanEditorTestV2 {
+public class CustomBooleanEditorTest {
     @Test
     public void testConvertStringToBoolean() {
         CustomBooleanEditor editor = new CustomBooleanEditor(true);

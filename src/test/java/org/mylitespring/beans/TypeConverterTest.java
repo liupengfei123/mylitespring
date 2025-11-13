@@ -3,7 +3,7 @@ package org.mylitespring.beans;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TypeConverterTestV2 {
+public class TypeConverterTest {
     @Test
     public void testConvertStringToInt() {
         TypeConverter converter = new SimpleTypeConverter();
