@@ -12,7 +12,7 @@
         <property name="version" value="2"/>
     </bean>
 
-    <bean id="accountDao" class="com.test.mylitespring.dao.v2.AccountDao"></bean>
+    <bean id="accountDao" class="com.test.mylitespring.dao.AccountDao"></bean>
 
-    <bean id="itemDao" class="com.test.mylitespring.dao.v2.ItemDao"></bean>
+    <bean id="itemDao" class="com.test.mylitespring.dao.ItemDao"></bean>
 </beans>

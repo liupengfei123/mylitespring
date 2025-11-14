@@ -1,7 +1,7 @@
 package org.mylitespring.context;
 
-import com.test.mylitespring.dao.v2.AccountDao;
-import com.test.mylitespring.dao.v2.ItemDao;
+import com.test.mylitespring.dao.AccountDao;
+import com.test.mylitespring.dao.ItemDao;
 import com.test.mylitespring.service.PetStoreServiceV1;
 import com.test.mylitespring.service.PetStoreServiceV2;
 import com.test.mylitespring.service.PetStoreServiceV3;
@@ -72,5 +72,6 @@ public class ApplicationContextTest {
 
         assertEquals(-1, petStore2.getVersion());
     }
+
 
 }

@@ -1,6 +1,6 @@
 package org.mylitespring.beans.factory.support;
 
-import com.test.mylitespring.dao.v2.AccountDao;
+import com.test.mylitespring.dao.AccountDao;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

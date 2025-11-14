@@ -1,7 +1,8 @@
 package com.test.mylitespring.service;
 
-import com.test.mylitespring.dao.v2.AccountDao;
-import com.test.mylitespring.dao.v2.ItemDao;
+
+import com.test.mylitespring.dao.AccountDao;
+import com.test.mylitespring.dao.ItemDao;
 
 public class PetStoreServiceV3 {
     private final AccountDao accountDao;
