@@ -1,11 +1,15 @@
 package org.mylitespring.beans.factory.config;
 
-import org.mylitespring.beans.factory.BeanFactory;
+import java.util.List;
 
-public interface ConfigurableBeanFactory extends BeanFactory {
+public interface ConfigurableBeanFactory extends AutowireCapableBeanFactory {
 
     void setBeanClassLoader(ClassLoader classLoader);
 
     ClassLoader getBeanClassLoader();
+
+    void addBeanPostProcessor(BeanPostProcessor postProcessor);
+
+    List<BeanPostProcessor> getBeanPostProcessors();
 
 }

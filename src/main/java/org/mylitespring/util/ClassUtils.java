@@ -5,6 +5,17 @@ import java.util.Map;
 
 public abstract class ClassUtils {
 
+    /** The package separator character: '.' */
+    private static final char PACKAGE_SEPARATOR = '.';
+
+    /** The path separator character: '/' */
+    private static final char PATH_SEPARATOR = '/';
+
+    /** The inner class separator character: '$' */
+    private static final char INNER_CLASS_SEPARATOR = '$';
+
+    /** The CGLIB class separator: "$$" */
+    public static final String CGLIB_CLASS_SEPARATOR = "$$";
 
     private static final Map<Class<?>, Class<?>> wrapperToPrimitiveTypeMap = new HashMap<>(8);
 
@@ -62,10 +73,30 @@ public abstract class ClassUtils {
         }
         if (lhsType.isPrimitive()) {
             Class<?> resolvedPrimitive = wrapperToPrimitiveTypeMap.get(rhsType);
-            return resolvedPrimitive != null && lhsType.equals(resolvedPrimitive);
+            return lhsType.equals(resolvedPrimitive);
         } else {
             Class<?> resolvedWrapper = primitiveTypeToWrapperMap.get(rhsType);
             return resolvedWrapper != null && lhsType.isAssignableFrom(resolvedWrapper);
         }
     }
+
+    public static String convertClassNameToResourcePath(String basePackage) {
+        return basePackage.replace(".", "/");
+    }
+
+    public static String convertResourcePathToClassName(String basePackage) {
+        return basePackage.replace("/", ".");
+    }
+
+    public static String getShortName(String className) {
+        int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR);
+        int nameEndIndex = className.indexOf(CGLIB_CLASS_SEPARATOR);
+        if (nameEndIndex == -1) {
+            nameEndIndex = className.length();
+        }
+        String shortName = className.substring(lastDotIndex + 1, nameEndIndex);
+        shortName = shortName.replace(INNER_CLASS_SEPARATOR, PACKAGE_SEPARATOR);
+        return shortName;
+    }
+
 }

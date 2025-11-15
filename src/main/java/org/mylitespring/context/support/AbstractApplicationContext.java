@@ -1,5 +1,7 @@
 package org.mylitespring.context.support;
 
+import org.mylitespring.beans.factory.annotation.AutowiredAnnotationProcessor;
+import org.mylitespring.beans.factory.config.ConfigurableBeanFactory;
 import org.mylitespring.beans.factory.support.DefaultBeanFactory;
 import org.mylitespring.beans.factory.xml.XMLBeanDefinitionReader;
 import org.mylitespring.context.ApplicationContext;
@@ -7,7 +9,7 @@ import org.mylitespring.core.io.Resource;
 
 public abstract class AbstractApplicationContext implements ApplicationContext {
 
-    private DefaultBeanFactory beanFactory;
+    private final DefaultBeanFactory beanFactory;
 
     public AbstractApplicationContext(String path) {
         this.beanFactory = new DefaultBeanFactory();
@@ -16,6 +18,8 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         Resource resource = getResourceByPath(path);
 
         reader.loadBeanDefinition(resource);
+
+        registerBeanPostProcessors(beanFactory);
     }
 
     protected abstract Resource getResourceByPath(String path);
@@ -25,13 +29,17 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         return beanFactory.getBean(beanId);
     }
 
-    @Override
     public void setBeanClassLoader(ClassLoader classLoader) {
         beanFactory.setBeanClassLoader(classLoader);
     }
 
-    @Override
     public ClassLoader getBeanClassLoader() {
         return beanFactory.getBeanClassLoader();
+    }
+
+    protected void registerBeanPostProcessors(ConfigurableBeanFactory beanFactory) {
+        AutowiredAnnotationProcessor postProcessor = new AutowiredAnnotationProcessor();
+        postProcessor.setBeanFactory(beanFactory);
+        beanFactory.addBeanPostProcessor(postProcessor);
     }
 }

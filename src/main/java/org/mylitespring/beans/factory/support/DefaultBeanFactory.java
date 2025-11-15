@@ -5,12 +5,16 @@ import org.mylitespring.beans.BeanDefinitionRegistry;
 import org.mylitespring.beans.PropertyValue;
 import org.mylitespring.beans.SimpleTypeConverter;
 import org.mylitespring.beans.factory.BeanCreationException;
+import org.mylitespring.beans.factory.config.BeanPostProcessor;
 import org.mylitespring.beans.factory.config.ConfigurableBeanFactory;
+import org.mylitespring.beans.factory.config.DependencyDescriptor;
+import org.mylitespring.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.mylitespring.util.ClassUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,6 +24,7 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
 
     private ClassLoader beanClassLoader;
 
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(64);
 
     @Override
@@ -64,6 +69,15 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         return beanClassLoader == null ? ClassUtils.getDefaultClassLoader() : beanClassLoader;
     }
 
+    @Override
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return beanPostProcessors;
+    }
+
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor postProcessor) {
+        beanPostProcessors.add(postProcessor);
+    }
 
     private Object createBean(BeanDefinition bd) {
         Object bean = instantiateBean(bd);
@@ -91,6 +105,13 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     }
 
     private void populateBean(BeanDefinition bd, Object bean) {
+        for(BeanPostProcessor processor : this.getBeanPostProcessors()){
+            if(processor instanceof InstantiationAwareBeanPostProcessor){
+                ((InstantiationAwareBeanPostProcessor)processor).postProcessPropertyValues(bean, bd.getID());
+            }
+        }
+
+
         List<PropertyValue> pvs = bd.getPropertyValues();
 
         if (pvs == null || pvs.isEmpty()) {
@@ -123,4 +144,26 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         }
     }
 
+    @Override
+    public Object resolveDependency(DependencyDescriptor descriptor) {
+        Class<?> typeToMatch = descriptor.getDependencyType();
+        for(BeanDefinition bd: this.beanDefinitionMap.values()){
+            //确保BeanDefinition 有Class对象
+            resolveBeanClass(bd);
+            Class<?> beanClass = bd.getBeanClass();
+            if(typeToMatch.isAssignableFrom(beanClass)){
+                return this.getBean(bd.getID());
+            }
+        }
+        return null;
+    }
+    public void resolveBeanClass(BeanDefinition bd) {
+        if(!bd.hasBeanClass()){
+            try {
+                bd.resolveBeanClass(this.getBeanClassLoader());
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("can't load class:"+bd.getBeanClassName());
+            }
+        }
+    }
 }

@@ -13,6 +13,7 @@ import org.mylitespring.beans.factory.BeanDefinitionStoreException;
 import org.mylitespring.beans.factory.config.RuntimeBeanReference;
 import org.mylitespring.beans.factory.config.TypedStringValue;
 import org.mylitespring.beans.factory.support.GenericBeanDefinition;
+import org.mylitespring.context.annotation.ClassPathBeanDefinitionScanner;
 import org.mylitespring.core.io.Resource;
 import org.mylitespring.util.StringUtils;
 
@@ -21,15 +22,28 @@ import java.util.Iterator;
 
 public class XMLBeanDefinitionReader {
     private final static String ID_ATTRIBUTE = "id";
+
     private final static String CLASS_ATTRIBUTE = "class";
+
     private final static String SCOPE_ATTRIBUTE = "scope";
+
     private final static String PROPERTY_ELEMENT = "property";
+
     private final static String REF_ATTRIBUTE = "ref";
+
     private final static String VALUE_ATTRIBUTE = "value";
+
     private final static String NAME_ATTRIBUTE = "name";
+
     private final static String CONSTRUCTOR_ELEMENT = "constructor-arg";
+
     public static final String TYPE_ATTRIBUTE = "type";
 
+    public static final String BEANS_NAMESPACE_URI = "http://www.springframework.org/schema/beans";
+
+    public static final String CONTEXT_NAMESPACE_URI = "http://www.springframework.org/schema/context";
+
+    private static final String BASE_PACKAGE_ATTRIBUTE = "base-package";
 
     protected final Log logger = LogFactory.getLog(getClass());
 
@@ -49,26 +63,50 @@ public class XMLBeanDefinitionReader {
 
             while (iterator.hasNext()) {
                 Element element = (Element) iterator.next();
+                String namespaceUri = element.getNamespaceURI();
 
-                String id = element.attributeValue(ID_ATTRIBUTE);
-                String beanClassName = element.attributeValue(CLASS_ATTRIBUTE);
-
-                BeanDefinition beanDefinition = new GenericBeanDefinition(id, beanClassName);
-
-                String scope = element.attributeValue(SCOPE_ATTRIBUTE);
-                if (scope != null) {
-                    beanDefinition.setScope(scope);
+                if(this.isDefaultNamespace(namespaceUri)){
+                    parseDefaultElement(element); //普通的bean
+                } else if(this.isContextNamespace(namespaceUri)){
+                    parseComponentElement(element); //例如<context:component-scan>
                 }
-
-                parsePropertyElement(element, beanDefinition);
-                parseConstructorElement(element, beanDefinition);
-
-                registry.registerBeanDefinition(id, beanDefinition);
             }
         } catch (Exception e) {
             throw new BeanDefinitionStoreException("parse xml fail", e);
         }
     }
+
+    private void parseComponentElement(Element element) {
+        String basePackages = element.attributeValue(BASE_PACKAGE_ATTRIBUTE);
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(registry);
+        scanner.doScan(basePackages);
+    }
+
+    private void parseDefaultElement(Element element) {
+        String id = element.attributeValue(ID_ATTRIBUTE);
+        String beanClassName = element.attributeValue(CLASS_ATTRIBUTE);
+
+        BeanDefinition beanDefinition = new GenericBeanDefinition(id, beanClassName);
+
+        String scope = element.attributeValue(SCOPE_ATTRIBUTE);
+        if (scope != null) {
+            beanDefinition.setScope(scope);
+        }
+
+        parsePropertyElement(element, beanDefinition);
+        parseConstructorElement(element, beanDefinition);
+
+        registry.registerBeanDefinition(id, beanDefinition);
+    }
+
+    private boolean isDefaultNamespace(String namespaceUri) {
+        return (!StringUtils.hasLength(namespaceUri) || BEANS_NAMESPACE_URI.equals(namespaceUri));
+    }
+    private boolean isContextNamespace(String namespaceUri){
+        return (!StringUtils.hasLength(namespaceUri) || CONTEXT_NAMESPACE_URI.equals(namespaceUri));
+    }
+
+
 
     private void parsePropertyElement(Element beanElem, BeanDefinition bd) {
         Iterator iterator = beanElem.elementIterator(PROPERTY_ELEMENT);

@@ -16,9 +16,16 @@ public interface BeanDefinition {
 
     String getBeanClassName();
 
+    Class<?> resolveBeanClass(ClassLoader classLoader)  throws ClassNotFoundException;
+
+    Class<?> getBeanClass() throws IllegalStateException;
+
+    boolean hasBeanClass();
+
     List<PropertyValue> getPropertyValues();
 
     ConstructorArgument getConstructorArgument();
 
     boolean hasConstructorArgument();
+
 }

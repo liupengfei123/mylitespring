@@ -5,6 +5,7 @@ import com.test.mylitespring.dao.ItemDao;
 import com.test.mylitespring.service.PetStoreServiceV1;
 import com.test.mylitespring.service.PetStoreServiceV2;
 import com.test.mylitespring.service.PetStoreServiceV3;
+import com.test.mylitespring.service.PetStoreServiceV4;
 import org.junit.Test;
 import org.mylitespring.context.support.ClassPathXmlApplicationContext;
 import org.mylitespring.context.support.FileSystemXmlApplicationContext;
@@ -73,5 +74,14 @@ public class ApplicationContextTest {
         assertEquals(-1, petStore2.getVersion());
     }
 
+
+    @Test
+    public void testGetBeanByAnnotation() {
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("petstore-v4.xml");
+        PetStoreServiceV4 petStore = (PetStoreServiceV4)ctx.getBean("petStore");
+
+        assertNotNull(petStore.getAccountDao());
+        assertNotNull(petStore.getItemDao());
+    }
 
 }
