@@ -9,6 +9,7 @@ import org.junit.runners.Suite;
         V2AllTests.class,
         V3AllTests.class,
         V4AllTests.class,
+        V5AllTests.class,
 })
 public class AllTests {
 

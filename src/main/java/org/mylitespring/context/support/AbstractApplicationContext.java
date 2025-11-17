@@ -1,5 +1,6 @@
 package org.mylitespring.context.support;
 
+import org.mylitespring.beans.factory.NoSuchBeanDefinitionException;
 import org.mylitespring.beans.factory.annotation.AutowiredAnnotationProcessor;
 import org.mylitespring.beans.factory.config.ConfigurableBeanFactory;
 import org.mylitespring.beans.factory.support.DefaultBeanFactory;
@@ -27,6 +28,11 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     @Override
     public Object getBean(String beanId) {
         return beanFactory.getBean(beanId);
+    }
+
+    @Override
+    public Class<?> getType(String name) throws NoSuchBeanDefinitionException {
+        return beanFactory.getType(name);
     }
 
     public void setBeanClassLoader(ClassLoader classLoader) {

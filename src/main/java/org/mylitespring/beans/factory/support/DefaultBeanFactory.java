@@ -5,6 +5,7 @@ import org.mylitespring.beans.BeanDefinitionRegistry;
 import org.mylitespring.beans.PropertyValue;
 import org.mylitespring.beans.SimpleTypeConverter;
 import org.mylitespring.beans.factory.BeanCreationException;
+import org.mylitespring.beans.factory.NoSuchBeanDefinitionException;
 import org.mylitespring.beans.factory.config.BeanPostProcessor;
 import org.mylitespring.beans.factory.config.ConfigurableBeanFactory;
 import org.mylitespring.beans.factory.config.DependencyDescriptor;
@@ -53,6 +54,15 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         return bean;
     }
 
+    @Override
+    public Class<?> getType(String name) throws NoSuchBeanDefinitionException {
+        BeanDefinition bd = getBeanDefinition(name);
+        if(bd == null){
+            throw new NoSuchBeanDefinitionException(name);
+        }
+        this.resolveBeanClass(bd);
+        return bd.getBeanClass();
+    }
 
     @Override
     public void registerBeanDefinition(String beanID, BeanDefinition beanDefinition) {

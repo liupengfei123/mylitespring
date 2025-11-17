@@ -6,4 +6,10 @@ public abstract class Assert {
             throw new IllegalArgumentException(message);
         }
     }
+
+    public static void notBlank(String string, String message) {
+        if (!StringUtils.hasText(string)) {
+            throw new IllegalArgumentException(message);
+        }
+    }
 }
